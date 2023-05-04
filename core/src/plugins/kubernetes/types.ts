@@ -10,12 +10,13 @@ import {
   KubernetesObject,
   V1DaemonSet,
   V1Deployment,
-  V1ObjectMeta,
-  V1ReplicaSet,
-  V1StatefulSet,
-  V1Pod,
-  V1ListMeta,
   V1Ingress,
+  V1ListMeta,
+  V1ObjectMeta,
+  V1Pod,
+  V1ReplicaSet,
+  V1ServiceAccount,
+  V1StatefulSet,
 } from "@kubernetes/client-node"
 
 import { Omit } from "../../util/util"
@@ -76,6 +77,7 @@ export type KubernetesDeployment = KubernetesResource<V1Deployment>
 export type KubernetesReplicaSet = KubernetesResource<V1ReplicaSet>
 export type KubernetesStatefulSet = KubernetesResource<V1StatefulSet>
 export type KubernetesPod = KubernetesResource<V1Pod>
+export type KubernetesServiceAccount = KubernetesResource<V1ServiceAccount>
 
 export type KubernetesWorkload = KubernetesResource<V1DaemonSet | V1Deployment | V1ReplicaSet | V1StatefulSet>
 export type KubernetesIngress = KubernetesResource<V1Ingress>

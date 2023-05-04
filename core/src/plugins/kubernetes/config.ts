@@ -6,28 +6,20 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-import {
-  joi,
-  joiArray,
-  joiIdentifier,
-  joiIdentifierDescription,
-  joiProviderName,
-  joiSparseArray,
-  joiStringMap,
-  StringMap,
-} from "../../config/common"
 import { BaseProviderConfig, Provider, providerConfigBaseSchema } from "../../config/provider"
+import { BaseTaskSpec, baseTaskSpecSchema, cacheResultSchema } from "../../config/task"
+import { BaseTestSpec, baseTestSpecSchema } from "../../config/test"
 import {
+  ContainerDevModeSpec,
+  ContainerEnvVars,
+  ContainerLocalModeSpec,
+  ContainerRegistryConfig,
   artifactsDescription,
   commandExample,
   containerArtifactSchema,
   containerDevModeSchema,
-  ContainerDevModeSpec,
-  ContainerEnvVars,
   containerEnvVarsSchema,
   containerLocalModeSchema,
-  ContainerLocalModeSpec,
-  ContainerRegistryConfig,
   containerRegistryConfigSchema,
   syncDefaultDirectoryModeSchema,
   syncDefaultFileModeSchema,
@@ -35,18 +27,27 @@ import {
   syncDefaultOwnerSchema,
   syncExcludeSchema,
 } from "../container/config"
-import { PluginContext } from "../../plugin-context"
-import { dedent, deline } from "../../util/string"
-import { defaultSystemNamespace } from "./system"
+import {
+  StringMap,
+  joi,
+  joiArray,
+  joiIdentifier,
+  joiIdentifierDescription,
+  joiProviderName,
+  joiSparseArray,
+  joiStringMap,
+} from "../../config/common"
 import { SyncableKind, syncableKinds } from "./hot-reload/hot-reload"
-import { BaseTaskSpec, baseTaskSpecSchema, cacheResultSchema } from "../../config/task"
-import { BaseTestSpec, baseTestSpecSchema } from "../../config/test"
+import { dedent, deline } from "../../util/string"
+
 import { ArtifactSpec } from "../../config/validation"
-import { V1Toleration } from "@kubernetes/client-node"
-import { runPodSpecIncludeFields } from "./run"
 import { KUBECTL_DEFAULT_TIMEOUT } from "./kubectl"
+import { PluginContext } from "../../plugin-context"
+import { V1Toleration } from "@kubernetes/client-node"
+import { defaultSystemNamespace } from "./system"
 import { devModeGuideLink } from "./dev-mode"
 import { localModeGuideLink } from "./local-mode"
+import { runPodSpecIncludeFields } from "./run"
 
 export const DEFAULT_KANIKO_IMAGE = "gcr.io/kaniko-project/executor:v1.8.1-debug"
 
@@ -215,6 +216,7 @@ export interface KubernetesConfig extends BaseProviderConfig {
     nodeSelector?: StringMap
     tolerations?: V1Toleration[]
     annotations?: StringMap
+    serviceAccountAnnotations?: StringMap
   }
   clusterDocker?: {
     enableBuildKit?: boolean

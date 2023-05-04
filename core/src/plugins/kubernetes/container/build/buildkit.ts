@@ -12,7 +12,7 @@ import split2 = require("split2")
 import { isEmpty } from "lodash"
 import { buildSyncVolumeName, dockerAuthSecretKey, inClusterRegistryHostname } from "../../constants"
 import { KubeApi } from "../../api"
-import { KubernetesDeployment } from "../../types"
+import { KubernetesDeployment, KubernetesServiceAccount } from "../../types"
 import { LogEntry } from "../../../../logger/log-entry"
 import { waitForResources, compareDeployedResources } from "../../status/status"
 import { KubernetesProvider, KubernetesPluginContext, ClusterBuildkitCacheConfig } from "../../config"
@@ -351,6 +351,15 @@ export function getBuildkitDeployment(
   imagePullSecrets: { name: string }[]
 ) {
   const tolerations = [...(provider.config.clusterBuildkit?.tolerations || []), builderToleration]
+  const serviceAccount: KubernetesServiceAccount = {
+    apiVersion: "v1",
+    kind: "ServiceAccount",
+    metadata: {
+      name: buildkitDeploymentName,
+      annotations: provider.config.clusterBuildkit?.serviceAccountAnnotations,
+    },
+  }
+
   const deployment: KubernetesDeployment = {
     apiVersion: "apps/v1",
     kind: "Deployment",
@@ -376,6 +385,7 @@ export function getBuildkitDeployment(
           annotations: provider.config.clusterBuildkit?.annotations,
         },
         spec: {
+          serviceAccountName: serviceAccount.metadata.name,
           containers: [
             {
               name: buildkitContainerName,
